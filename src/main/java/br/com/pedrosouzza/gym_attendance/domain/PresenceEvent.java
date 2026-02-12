@@ -22,5 +22,8 @@ public class PresenceEvent {
     private User user;
 
     @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
     private LocalDateTime timestamp = LocalDateTime.now();
 }
