@@ -9,11 +9,18 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class LoginResponseDTO {
-    private Long id;
+    private Long userId;
     private String email;
     private String name;
+    private String firstName;
     private String lastName;
     private Role role;
     private String token;
 
+    public void setUserId(Long id) {
+    }
+
+    public void setFirstName(String firstName) {
+
+    }
 }
