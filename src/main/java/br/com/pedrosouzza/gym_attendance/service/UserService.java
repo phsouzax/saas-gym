@@ -2,6 +2,7 @@ package br.com.pedrosouzza.gym_attendance.service;
 
 import br.com.pedrosouzza.gym_attendance.domain.User;
 import br.com.pedrosouzza.gym_attendance.dto.UserDTO;
+import br.com.pedrosouzza.gym_attendance.exceptions.BusinessException;
 import br.com.pedrosouzza.gym_attendance.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,7 +20,7 @@ public class UserService {
 
     public UserDTO create(UserDTO dto, String password) {
         if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new RuntimeException("Email já cadastrado");
+            throw new BusinessException("Email já cadastrado");
         }
 
         String passwordHash = passwordEncoder.encode(password);
@@ -53,7 +54,7 @@ public class UserService {
 
     public UserDTO findById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new BusinessException("Usuário não encontrado"));
 
         return toDTO(user);
     }

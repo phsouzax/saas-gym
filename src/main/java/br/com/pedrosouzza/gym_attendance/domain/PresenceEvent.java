@@ -2,12 +2,12 @@ package br.com.pedrosouzza.gym_attendance.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "presence_event")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -17,13 +17,11 @@ public class PresenceEvent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(nullable = false)
-    private String name;
+    private LocalDateTime timestamp;
 
-    @Column(nullable = false)
-    private LocalDateTime timestamp = LocalDateTime.now();
 }

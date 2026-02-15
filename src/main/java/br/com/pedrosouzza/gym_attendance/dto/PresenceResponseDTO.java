@@ -1,6 +1,7 @@
 package br.com.pedrosouzza.gym_attendance.dto;
 
 import lombok.*;
+
 import java.time.LocalDateTime;
 
 @Getter
@@ -11,6 +12,6 @@ import java.time.LocalDateTime;
 public class PresenceResponseDTO {
     private Long id;
     private Long userId;
-    private String userName;
+    private String name;
     private LocalDateTime timestamp;
 }
