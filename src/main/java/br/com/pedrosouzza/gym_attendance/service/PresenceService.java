@@ -7,12 +7,14 @@ import br.com.pedrosouzza.gym_attendance.exceptions.BusinessException;
 import br.com.pedrosouzza.gym_attendance.repository.PresenceRepository;
 import br.com.pedrosouzza.gym_attendance.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j  // ← ADICIONA ISSO
 @Service
 @RequiredArgsConstructor
 public class PresenceService {
@@ -21,8 +23,13 @@ public class PresenceService {
     private final UserRepository userRepository;
 
     public PresenceResponseDTO register(Long userId) {
+        log.info("Registrando presença para usuário ID: {}", userId);
+
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessException("Usuário não encontrado"));
+                .orElseThrow(() -> {
+                    log.warn("Tentativa de registrar presença para usuário inexistente ID: {}", userId);
+                    return new BusinessException("Usuário não encontrado");
+                });
 
         PresenceEvent event = PresenceEvent.builder()
                 .user(user)
@@ -31,16 +38,23 @@ public class PresenceService {
 
         event = presenceRepository.save(event);
 
+        log.info("Presença registrada: {} {} (ID: {}) às {}",
+                user.getFirstName(), user.getLastName(), user.getId(), event.getTimestamp());
+
         return toDTO(event);
     }
 
     public List<PresenceResponseDTO> findByUserAndPeriod(Long userId, LocalDateTime start, LocalDateTime end) {
+        log.info("Consultando presenças do usuário ID: {} no período de {} até {}", userId, start, end);
+
         List<PresenceEvent> events = presenceRepository.findByUserIdAndTimestampBetween(userId, start, end);
         List<PresenceResponseDTO> result = new ArrayList<>();
 
         for (PresenceEvent event : events) {
             result.add(toDTO(event));
         }
+
+        log.info("Total de presenças encontradas: {}", result.size());
 
         return result;
     }

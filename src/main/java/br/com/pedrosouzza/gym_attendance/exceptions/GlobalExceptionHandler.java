@@ -1,5 +1,6 @@
 package br.com.pedrosouzza.gym_attendance.exceptions;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j  // ← ADICIONA ISSO
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -20,6 +22,8 @@ public class GlobalExceptionHandler {
             BusinessException ex,
             WebRequest request
     ) {
+        log.warn("Erro de negócio: {} - Path: {}", ex.getMessage(), request.getDescription(false));
+
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
@@ -36,6 +40,8 @@ public class GlobalExceptionHandler {
             DataIntegrityViolationException ex,
             WebRequest request
     ) {
+        log.error("Erro de integridade de dados: {} - Path: {}", ex.getMessage(), request.getDescription(false));
+
         String message = "Erro de integridade dos dados";
 
         if (ex.getMessage().contains("email")) {
@@ -64,6 +70,8 @@ public class GlobalExceptionHandler {
                 errors.put(error.getField(), error.getDefaultMessage())
         );
 
+        log.warn("Erro de validação: {} - Path: {}", errors, request.getDescription(false));
+
         Map<String, Object> response = new HashMap<>();
         response.put("timestamp", LocalDateTime.now());
         response.put("status", HttpStatus.BAD_REQUEST.value());
@@ -79,6 +87,8 @@ public class GlobalExceptionHandler {
             Exception ex,
             WebRequest request
     ) {
+        log.error("Erro inesperado: {} - Path: {}", ex.getMessage(), request.getDescription(false), ex);
+
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
