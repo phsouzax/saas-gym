@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j  // ← ADICIONA ISSO
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
